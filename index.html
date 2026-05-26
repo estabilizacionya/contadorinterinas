@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>#EstabilizaciónYA – Cartel Interactivo</title>
+  <meta name="description" content="Cartel digital interactivo de la campaña #EstabilizaciónYA para docentes interinas/os. Personaliza el número y descarga los materiales." />
+  <meta property="og:title" content="#EstabilizaciónYA – Cartel Interactivo" />
+  <meta property="og:description" content="Muestra cuántas interinas/os somos en tu centro. Haz la captura y compártela." />
+  <meta property="og:type" content="website" />
+
+  <!-- Roboto Black + Bold para el cartel; Roboto Regular para el cuerpo -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ───────────────────────────────────────────
+       TOKENS
+    ─────────────────────────────────────────── */
+    :root {
+      --yellow:       #F5C800;
+      --black:        #0D0D0D;
+      --white:        #ffffff;
+      --poster-max:   640px;
+      --page-pad-x:   clamp(12px, 4vw, 32px);
+      --border-w:     clamp(5px, 1vw, 9px);
+      --radius-outer: clamp(18px, 3.5vw, 36px);
+    }
+
+    /* ───────────────────────────────────────────
+       RESET
+    ─────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--yellow);
+      color: var(--black);
+      font-family: 'Roboto', Arial, sans-serif;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: clamp(20px, 5vw, 48px) var(--page-pad-x) 0;
+      gap: 0;
+    }
+
+    /* ───────────────────────────────────────────
+       POSTER
+    ─────────────────────────────────────────── */
+    .poster {
+      width: min(var(--poster-max), 100%);
+      background: var(--yellow);
+      border: var(--border-w) solid var(--black);
+      border-radius: var(--radius-outer);
+      padding: clamp(28px, 6vw, 60px) clamp(24px, 6vw, 56px) clamp(20px, 5vw, 44px);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: clamp(8px, 2vw, 16px);
+      /* Double-border effect mimicking the printed poster */
+      box-shadow:
+        inset 0 0 0 4px var(--yellow),
+        inset 0 0 0 7px var(--black),
+        inset 0 0 0 10px var(--yellow);
+    }
+
+    /* ── Header ── */
+    .poster-header {
+      font-family: 'Roboto', Arial, sans-serif;
+      font-weight: 900;
+      font-size: clamp(1.55rem, 6vw, 3rem);
+      line-height: 1.08;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      user-select: none;
+    }
+
+    .header-line { display: block; }
+
+    /* Dropdown styled as plain text */
+    #tipo-select {
+      appearance: none;
+      -webkit-appearance: none;
+      background: transparent;
+      border: none;
+      outline: none;
+      font-family: inherit;
+      font-size: inherit;
+      font-weight: inherit;
+      letter-spacing: inherit;
+      text-transform: uppercase;
+      color: inherit;
+      text-align: center;
+      cursor: pointer;
+      /* subtle caret space */
+      padding: 0 22px 0 0;
+      position: relative;
+      /* underline hint */
+      border-bottom: 3px dashed rgba(0,0,0,0.3);
+      transition: border-color .2s;
+      max-width: 100%;
+    }
+    #tipo-select:hover,
+    #tipo-select:focus { border-bottom-color: var(--black); }
+
+    .select-wrap {
+      display: inline-block;
+      position: relative;
+    }
+    .select-wrap::after {
+      content: '\25BE'; /* ▾ */
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      font-size: 0.65em;
+      opacity: 0.45;
+    }
+
+    /* ── Counter ── */
+    .counter-area {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: clamp(8px, 2.5vw, 24px);
+      width: 100%;
+      margin: clamp(4px, 1vw, 10px) 0;
+    }
+
+    .counter-btn {
+      background: transparent;
+      border: var(--border-w) solid var(--black);
+      border-radius: 50%;
+      width: clamp(38px, 8vw, 60px);
+      height: clamp(38px, 8vw, 60px);
+      font-size: clamp(1.3rem, 4vw, 2.2rem);
+      font-family: 'Roboto', Arial, sans-serif;
+      font-weight: 900;
+      color: var(--black);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: background .14s, transform .1s;
+      line-height: 1;
+    }
+    .counter-btn:hover  { background: rgba(0,0,0,0.09); }
+    .counter-btn:active { transform: scale(0.91); background: rgba(0,0,0,0.18); }
+
+    .number-box {
+      border: var(--border-w) solid var(--black);
+      padding: clamp(6px, 1.5vw, 16px) clamp(18px, 5vw, 48px);
+      min-width: clamp(110px, 28vw, 210px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #counter-display {
+      font-size: clamp(4.5rem, 20vw, 9.5rem);
+      font-family: 'Roboto', Arial, sans-serif;
+      font-weight: 900;
+      line-height: 1;
+      color: var(--black);
+      letter-spacing: -0.03em;
+      outline: none;
+      cursor: text;
+      min-width: 2ch;
+      text-align: center;
+      border-bottom: 3px solid transparent;
+      transition: border-color .2s;
+    }
+    #counter-display:focus { border-bottom: 3px dashed rgba(0,0,0,0.5); }
+
+    /* ── Subject ── */
+    .poster-subject {
+      font-family: 'Roboto', Arial, sans-serif;
+      font-weight: 900;
+      font-size: clamp(1.9rem, 7.5vw, 3.8rem);
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      line-height: 1;
+    }
+
+    /* ── Hashtag ── */
+    .poster-hashtag {
+      font-family: 'Roboto', Arial, sans-serif;
+      font-weight: 700;
+      font-size: clamp(1rem, 3.8vw, 1.9rem);
+      letter-spacing: 0.01em;
+      margin-top: clamp(2px, 0.5vw, 6px);
+    }
+
+    /* ── Edit hint ── */
+    .hint {
+      font-family: 'Roboto', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 400;
+      color: rgba(0,0,0,0.4);
+      letter-spacing: 0.01em;
+      margin-top: -4px;
+    }
+
+    /* ───────────────────────────────────────────
+       SECTION WRAPPER (everything below poster)
+    ─────────────────────────────────────────── */
+    .below-poster {
+      width: min(var(--poster-max), 100%);
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    /* ───────────────────────────────────────────
+       PHOTO CAROUSEL
+    ─────────────────────────────────────────── */
+    .carousel-section {
+      margin-top: 36px;
+    }
+
+    .section-label {
+      font-family: 'Roboto', sans-serif;
+      font-weight: 700;
+      font-size: 0.7rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(0,0,0,0.45);
+      text-align: center;
+      margin-bottom: 14px;
+    }
+
+    .carousel {
+      position: relative;
+      width: 100%;
+      border: var(--border-w) solid var(--black);
+      border-radius: var(--radius-outer);
+      overflow: hidden;
+      background: var(--black);
+      aspect-ratio: 16/10;
+    }
+
+    .carousel-track {
+      display: flex;
+      height: 100%;
+      transition: transform 0.42s cubic-bezier(.4,0,.2,1);
+    }
+
+    .carousel-slide {
+      flex: 0 0 100%;
+      height: 100%;
+    }
+
+    .carousel-slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    .carousel-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255,255,255,0.85);
+      border: 2.5px solid var(--black);
+      border-radius: 50%;
+      width: clamp(34px, 7vw, 48px);
+      height: clamp(34px, 7vw, 48px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background .15s, transform .1s;
+      z-index: 2;
+      font-size: clamp(1rem, 2.5vw, 1.4rem);
+      color: var(--black);
+      font-weight: 900;
+      line-height: 1;
+    }
+    .carousel-btn:hover  { background: var(--yellow); }
+    .carousel-btn:active { transform: translateY(-50%) scale(0.92); }
+    .carousel-btn.prev  { left:  clamp(8px, 2vw, 16px); }
+    .carousel-btn.next  { right: clamp(8px, 2vw, 16px); }
+
+    /* hide single buttons if only one slide */
+    .carousel[data-count="1"] .carousel-btn { display: none; }
+
+    .carousel-dots {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .carousel-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.25);
+      border: none;
+      cursor: pointer;
+      transition: background .2s, transform .15s;
+      padding: 0;
+    }
+    .carousel-dot.active {
+      background: var(--black);
+      transform: scale(1.25);
+    }
+
+    /* ───────────────────────────────────────────
+       GUIDE SECTION
+    ─────────────────────────────────────────── */
+    .guide-section {
+      margin-top: 40px;
+    }
+
+    .guide-card {
+      border: var(--border-w) solid var(--black);
+      border-radius: var(--radius-outer);
+      overflow: hidden;
+    }
+
+    .guide-header {
+      background: var(--black);
+      color: var(--yellow);
+      padding: clamp(14px, 3vw, 22px) clamp(20px, 4vw, 32px);
+      text-align: center;
+    }
+
+    .guide-header h2 {
+      font-family: 'Roboto', sans-serif;
+      font-weight: 900;
+      font-size: clamp(1.1rem, 4vw, 1.7rem);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .guide-steps {
+      padding: clamp(20px, 4vw, 36px) clamp(20px, 4vw, 36px);
+      display: flex;
+      flex-direction: column;
+      gap: clamp(18px, 3vw, 28px);
+    }
+
+    .guide-step {
+      display: grid;
+      grid-template-columns: clamp(40px, 7vw, 56px) 1fr;
+      gap: clamp(12px, 2.5vw, 20px);
+      align-items: start;
+    }
+
+    .step-number {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: clamp(40px, 7vw, 56px);
+      height: clamp(40px, 7vw, 56px);
+      border: var(--border-w) solid var(--black);
+      border-radius: 50%;
+      font-family: 'Roboto', sans-serif;
+      font-weight: 900;
+      font-size: clamp(1rem, 3vw, 1.4rem);
+      flex-shrink: 0;
+    }
+
+    .step-content {
+      padding-top: clamp(6px, 1.2vw, 10px);
+    }
+
+    .step-title {
+      font-family: 'Roboto', sans-serif;
+      font-weight: 700;
+      font-size: clamp(0.95rem, 2.8vw, 1.15rem);
+      line-height: 1.25;
+      margin-bottom: 4px;
+    }
+
+    .step-desc {
+      font-family: 'Roboto', sans-serif;
+      font-weight: 400;
+      font-size: clamp(0.82rem, 2.2vw, 0.95rem);
+      color: rgba(0,0,0,0.6);
+      line-height: 1.5;
+    }
+
+    .step-desc a {
+      color: var(--black);
+      font-weight: 700;
+      text-underline-offset: 2px;
+    }
+
+    /* ───────────────────────────────────────────
+       DOWNLOADS SECTION
+    ─────────────────────────────────────────── */
+    .downloads-section {
+      margin-top: 36px;
+      margin-bottom: 48px;
+    }
+
+    .downloads-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: clamp(10px, 2vw, 16px);
+      margin-top: 14px;
+    }
+
+    @media (max-width: 480px) {
+      .downloads-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .download-card {
+      border: var(--border-w) solid var(--black);
+      border-radius: clamp(10px, 2vw, 16px);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .download-card-header {
+      background: var(--black);
+      color: var(--yellow);
+      padding: clamp(8px, 1.5vw, 13px) clamp(10px, 2vw, 16px);
+      font-family: 'Roboto', sans-serif;
+      font-weight: 900;
+      font-size: clamp(0.75rem, 2.2vw, 0.9rem);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      text-align: center;
+    }
+
+    .download-card-body {
+      padding: clamp(10px, 2vw, 14px) clamp(10px, 2vw, 14px);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex: 1;
+    }
+
+    .btn-dl {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      text-decoration: none;
+      font-family: 'Roboto', sans-serif;
+      font-weight: 700;
+      font-size: clamp(0.75rem, 2vw, 0.85rem);
+      letter-spacing: 0.04em;
+      padding: clamp(7px, 1.5vw, 10px) 8px;
+      border-radius: 7px;
+      border: 2.5px solid var(--black);
+      transition: background .15s, color .15s, transform .1s;
+    }
+    .btn-dl:active { transform: scale(0.96); }
+    .btn-dl.pdf  { background: var(--black); color: var(--yellow); }
+    .btn-dl.pdf:hover { background: transparent; color: var(--black); }
+    .btn-dl.docx { background: transparent; color: var(--black); }
+    .btn-dl.docx:hover { background: var(--black); color: var(--yellow); }
+
+    /* Drive CTA */
+    .btn-drive-main {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: clamp(12px, 2.5vw, 18px);
+      padding: clamp(13px, 2.5vw, 17px) 24px;
+      background: var(--black);
+      color: var(--yellow);
+      border: var(--border-w) solid var(--black);
+      border-radius: clamp(10px, 2vw, 16px);
+      text-decoration: none;
+      font-family: 'Roboto', sans-serif;
+      font-weight: 700;
+      font-size: clamp(0.88rem, 2.5vw, 1.05rem);
+      letter-spacing: 0.02em;
+      transition: background .18s, color .18s, transform .1s;
+      text-align: center;
+    }
+    .btn-drive-main:hover {
+      background: transparent;
+      color: var(--black);
+      transform: translateY(-2px);
+    }
+    .btn-drive-main:active { transform: translateY(0); }
+    .btn-drive-main svg { width: 20px; height: 20px; flex-shrink: 0; }
+
+    /* ───────────────────────────────────────────
+       FOOTER
+    ─────────────────────────────────────────── */
+    footer {
+      width: 100%;
+      border-top: 3px solid rgba(0,0,0,0.15);
+      text-align: center;
+      padding: 20px var(--page-pad-x) 28px;
+      font-family: 'Roboto', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 400;
+      color: rgba(0,0,0,0.38);
+    }
+
+    /* ───────────────────────────────────────────
+       ANIMATIONS
+    ─────────────────────────────────────────── */
+    @keyframes pop {
+      0%   { transform: scale(1); }
+      40%  { transform: scale(1.11); }
+      100% { transform: scale(1); }
+    }
+    .pop { animation: pop 0.22s ease-out; }
+  </style>
+</head>
+<body>
+
+  <!-- ══════════════════════════════════════════
+       INTERACTIVE POSTER
+  ═══════════════════════════════════════════ -->
+  <article class="poster" role="main" aria-label="Cartel interactivo EstabilizaciónYA">
+
+    <header class="poster-header">
+      <span class="header-line">EN ESTE</span>
+      <span class="header-line">
+        <span class="select-wrap">
+          <select id="tipo-select" aria-label="Tipo de centro educativo">
+            <option value="INSTITUTO">INSTITUTO</option>
+            <option value="ESCUELA">ESCUELA</option>
+            <option value="FACULTAD">FACULTAD</option>
+          </select>
+        </span>
+      </span>
+      <span class="header-line">SOMOS</span>
+    </header>
+
+    <div class="counter-area">
+      <button class="counter-btn" id="btn-minus" aria-label="Reducir número">&#8722;</button>
+      <div class="number-box">
+        <span
+          id="counter-display"
+          role="spinbutton"
+          aria-label="Numero de interinas"
+          aria-valuenow="18"
+          aria-valuemin="1"
+          contenteditable="true"
+          inputmode="numeric"
+          spellcheck="false"
+        >18</span>
+      </div>
+      <button class="counter-btn" id="btn-plus" aria-label="Aumentar numero">+</button>
+    </div>
+
+    <p class="hint">Haz clic en el numero para editarlo o usa los botones</p>
+
+    <p class="poster-subject">INTERINⒶS</p>
+
+    <p class="poster-hashtag">#EstabilizaciónYA</p>
+
+  </article>
+
+  <!-- ══════════════════════════════════════════
+       BELOW POSTER
+  ═══════════════════════════════════════════ -->
+  <div class="below-poster">
+
+    <!-- PHOTO CAROUSEL -->
+    <section class="carousel-section" aria-label="Fotos de la campaña">
+      <p class="section-label">La campaña en los centros</p>
+
+      <div class="carousel" id="main-carousel" data-count="3" aria-roledescription="carrusel">
+        <div class="carousel-track" id="carousel-track">
+
+          <div class="carousel-slide" role="group" aria-label="Imagen 1 de 3">
+            <img
+              src="./fotos/InstitutoCampaña.png"
+              alt="Cartel EstabilizaciónYA con 18 interinas pegado en la entrada de un instituto"
+              loading="eager"
+            />
+          </div>
+
+          <div class="carousel-slide" role="group" aria-label="Imagen 2 de 3">
+            <img
+              src="./fotos/EscuelaCampaña.png"
+              alt="Cartel EstabilizaciónYA con 23 interinas pegado en la entrada de una escuela"
+              loading="lazy"
+            />
+          </div>
+
+          <div class="carousel-slide" role="group" aria-label="Imagen 3 de 3">
+            <img
+              src="./fotos/FacultadCampaña.png"
+              alt="Cartel EstabilizaciónYA con 41 interinas pegado en la entrada de una facultad"
+              loading="lazy"
+            />
+          </div>
+
+          <!-- Para añadir más fotos, añade un bloque carousel-slide con src="./fotos/NombreImagen.png" -->
+
+        </div>
+
+        <button class="carousel-btn prev" id="carousel-prev" aria-label="Imagen anterior">&#8249;</button>
+        <button class="carousel-btn next" id="carousel-next" aria-label="Imagen siguiente">&#8250;</button>
+      </div>
+
+      <div class="carousel-dots" id="carousel-dots" aria-label="Indicadores de imagen"></div>
+    </section>
+
+    <!-- GUIDE -->
+    <section class="guide-section" aria-labelledby="guide-title">
+      <div class="guide-card">
+        <div class="guide-header">
+          <h2 id="guide-title">Como unirse a esta protesta</h2>
+        </div>
+        <div class="guide-steps">
+
+          <div class="guide-step">
+            <span class="step-number" aria-hidden="true">1</span>
+            <div class="step-content">
+              <p class="step-title">Averigua el numero de interinas/os de tu centro</p>
+              <p class="step-desc">Consulta con tus companeras/os o con la direccion del centro cuantas personas tienen plaza interina en este momento.</p>
+            </div>
+          </div>
+
+          <div class="guide-step">
+            <span class="step-number" aria-hidden="true">2</span>
+            <div class="step-content">
+              <p class="step-title">Imprime el cartel en un A3 amarillo</p>
+              <p class="step-desc">
+                Descarga la plantilla que corresponda a tu centro (instituto, escuela o facultad) e imprímela en papel A3 de color amarillo. Puedes
+                <a href="https://drive.google.com/drive/folders/1YMSiLm4H4lKg24hYKzR_HPLEz8uXkulR?usp=drive_link" target="_blank" rel="noopener noreferrer">descargar la plantilla desde aqui</a>.
+              </p>
+            </div>
+          </div>
+
+          <div class="guide-step">
+            <span class="step-number" aria-hidden="true">3</span>
+            <div class="step-content">
+              <p class="step-title">Pégalo en tu centro</p>
+              <p class="step-desc">Coloca el cartel en un lugar visible, como la entrada principal, el tablón de anuncios o la sala de profesores.</p>
+            </div>
+          </div>
+
+          <div class="guide-step">
+            <span class="step-number" aria-hidden="true">4</span>
+            <div class="step-content">
+              <p class="step-title">Sube tu foto a redes sociales y etiquetanos</p>
+              <p class="step-desc">Haz una foto al cartel en su lugar y compártela con el hashtag <strong>#EstabilizaciónYA</strong> para que la campaña llegue más lejos.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- DOWNLOADS -->
+    <section class="downloads-section" aria-labelledby="downloads-title">
+      <p class="section-label" id="downloads-title">Plantillas descargables</p>
+
+      <div class="downloads-grid">
+
+        <div class="download-card" id="dl-instituto">
+          <div class="download-card-header">Instituto</div>
+          <div class="download-card-body">
+            <a href="./InstitutoPlantilla.pdf"  class="btn-dl pdf"  download>PDF</a>
+            <a href="./InstitutoPlantilla.docx" class="btn-dl docx" download>Word</a>
+          </div>
+        </div>
+
+        <div class="download-card" id="dl-escuela">
+          <div class="download-card-header">Escuela</div>
+          <div class="download-card-body">
+            <a href="./EscuelaPlantilla.pdf"  class="btn-dl pdf"  download>PDF</a>
+            <a href="./EscuelaPlantilla.docx" class="btn-dl docx" download>Word</a>
+          </div>
+        </div>
+
+        <div class="download-card" id="dl-facultad">
+          <div class="download-card-header">Facultad</div>
+          <div class="download-card-body">
+            <a href="./FacultadPlantilla.pdf"  class="btn-dl pdf"  download>PDF</a>
+            <a href="./FacultadPlantilla.docx" class="btn-dl docx" download>Word</a>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Google Drive CTA -->
+      <a
+        href="https://drive.google.com/drive/folders/1YMSiLm4H4lKg24hYKzR_HPLEz8uXkulR?usp=drive_link"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="btn-drive-main"
+        id="btn-google-drive"
+        aria-label="Ver todo el material de la campana en Google Drive"
+      >
+        <svg viewBox="0 0 87.3 78" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="m6.6 66.85 3.85 6.65c.8 1.4 1.95 2.5 3.3 3.3l13.75-23.8h-27.5c0 1.55.4 3.1 1.2 4.5z" fill="currentColor" opacity=".85"/>
+          <path d="m43.65 25-13.75-23.8c-1.35.8-2.5 1.9-3.3 3.3l-25.4 44a9.06 9.06 0 0 0 -1.2 4.5h27.5z" fill="currentColor" opacity=".65"/>
+          <path d="m73.55 76.8c1.35-.8 2.5-1.9 3.3-3.3l1.6-2.75 7.65-13.25c.8-1.4 1.2-2.95 1.2-4.5h-27.502l5.852 11.5z" fill="currentColor" opacity=".85"/>
+          <path d="m43.65 25 13.75-23.8c-1.35-.8-2.9-1.2-4.5-1.2h-18.5c-1.6 0-3.15.45-4.5 1.2z" fill="currentColor"/>
+          <path d="m59.8 53h-32.3l-13.75 23.8c1.35.8 2.9 1.2 4.5 1.2h50.8c1.6 0 3.15-.45 4.5-1.2z" fill="currentColor" opacity=".75"/>
+          <path d="m73.4 26.5-12.7-22c-.8-1.4-1.95-2.5-3.3-3.3l-13.75 23.8 16.15 27h27.45c0-1.55-.4-3.1-1.2-4.5z" fill="currentColor" opacity=".9"/>
+        </svg>
+        Ver todo el material en Google Drive
+      </a>
+    </section>
+
+  </div><!-- /below-poster -->
+
+  <footer>
+    <p>Campana <strong>#EstabilizaciónYA</strong> &middot; Materiales de uso libre &middot; 2025</p>
+  </footer>
+
+  <!-- ══════════════════════════════════════════
+       JAVASCRIPT
+  ═══════════════════════════════════════════ -->
+  <script>
+    "use strict";
+
+    /* ─── COUNTER ─────────────────────────────── */
+    const display  = document.getElementById('counter-display');
+    const btnPlus  = document.getElementById('btn-plus');
+    const btnMinus = document.getElementById('btn-minus');
+
+    function getValue() {
+      return parseInt(display.textContent.replace(/\D/g, ''), 10) || 0;
+    }
+
+    function setValue(n) {
+      if (n < 0) n = 0;
+      display.textContent = String(n);
+      display.setAttribute('aria-valuenow', n);
+      display.classList.remove('pop');
+      void display.offsetWidth;
+      display.classList.add('pop');
+    }
+
+    btnPlus.addEventListener('click',  () => setValue(getValue() + 1));
+    btnMinus.addEventListener('click', () => { const v = getValue(); if (v > 0) setValue(v - 1); });
+
+    display.addEventListener('keydown', (e) => {
+      const allow = ['Backspace','Delete','ArrowLeft','ArrowRight','Tab','Enter','Home','End'];
+      if (allow.includes(e.key)) {
+        if (e.key === 'Enter') { e.preventDefault(); display.blur(); }
+        return;
+      }
+      if (!/^\d$/.test(e.key)) e.preventDefault();
+    });
+
+    display.addEventListener('paste', (e) => {
+      e.preventDefault();
+      const digits = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g, '');
+      if (digits) document.execCommand('insertText', false, digits);
+    });
+
+    display.addEventListener('blur', () => setValue(getValue()));
+
+    display.addEventListener('focus', () => {
+      const range = document.createRange();
+      range.selectNodeContents(display);
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+    });
+
+    btnPlus.addEventListener('keydown',  e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setValue(getValue() + 1); }});
+    btnMinus.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); const v = getValue(); if (v > 0) setValue(v - 1); }});
+
+    /* ─── CAROUSEL ────────────────────────────── */
+    (function () {
+      const carousel = document.getElementById('main-carousel');
+      const track    = document.getElementById('carousel-track');
+      const dotsEl   = document.getElementById('carousel-dots');
+      const slides   = Array.from(track.querySelectorAll('.carousel-slide'));
+      const total    = slides.length;
+      let current    = 0;
+
+      carousel.setAttribute('data-count', total);
+
+      // Build dots
+      slides.forEach((_, i) => {
+        const dot = document.createElement('button');
+        dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
+        dot.setAttribute('aria-label', 'Ir a imagen ' + (i + 1));
+        dot.addEventListener('click', () => goTo(i));
+        dotsEl.appendChild(dot);
+      });
+
+      // Update aria labels on slides
+      slides.forEach((s, i) => {
+        s.setAttribute('aria-label', 'Imagen ' + (i + 1) + ' de ' + total);
+      });
+
+      function goTo(idx) {
+        current = (idx + total) % total;
+        track.style.transform = 'translateX(-' + (current * 100) + '%)';
+        dotsEl.querySelectorAll('.carousel-dot').forEach((d, i) => {
+          d.classList.toggle('active', i === current);
+        });
+      }
+
+      document.getElementById('carousel-prev').addEventListener('click', () => goTo(current - 1));
+      document.getElementById('carousel-next').addEventListener('click', () => goTo(current + 1));
+
+      // Touch / swipe
+      let startX = 0;
+      track.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, { passive: true });
+      track.addEventListener('touchend',   e => {
+        const dx = e.changedTouches[0].clientX - startX;
+        if (Math.abs(dx) > 40) goTo(current + (dx < 0 ? 1 : -1));
+      });
+
+      // Auto-advance (only if more than one slide)
+      if (total > 1) {
+        setInterval(() => goTo(current + 1), 5000);
+      }
+    })();
+  </script>
+</body>
+</html>
